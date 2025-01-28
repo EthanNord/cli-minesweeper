@@ -3,8 +3,9 @@
 #include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ncurses/curses.h>
+#include <curses.h>
 #include <time.h>
+#include <limits.h>
 
 /* constants */
 
@@ -58,6 +59,7 @@ void runGame();
 int parseint(char*);
 int getrand();
 void help(char*);
+void cleanup();
 
 /* print to console depending on color or not */
 void print_nocolor(short color, char c)
@@ -224,6 +226,7 @@ int main(int argc, char** argv)
 
     initGame();
     runGame();
+    cleanup();
 }
 
 void initGame()
@@ -412,14 +415,14 @@ void lose()
     mvprintw(0, 0, "You lost ...                          ");
     print_grid_final();
     printw("Press any key to continue, or 'q' to exit. \n");
-    if(getch() == 'q') exit(0);
+    if(getch() == 'q') cleanup();
 }
 void win()
 {
     mvprintw(0, 0, "You win!!                             ");
     print_grid_final();
     printw("Press any key to continue, or 'q' to exit. ");
-    if(getch() == 'q') exit(0);
+    if(getch() == 'q') cleanup();
 }
 
 bool check_win()
@@ -481,5 +484,13 @@ int parseint(char* str)
     if(o < 1) return 1;
     if(o > CHAR_MAX) return CHAR_MAX;
     return o;
+}
+
+void cleanup()
+{
+    echo();
+    keypad(stdscr, FALSE);
+    endwin();
+    exit(0);
 }
 
