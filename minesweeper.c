@@ -9,9 +9,9 @@
 
 /* constants */
 
-#define MIN_WIDTH 9
+#define MIN_WIDTH 4
 #define MAX_WIDTH 39
-#define MIN_HEIGHT 9
+#define MIN_HEIGHT 4
 #define MAX_HEIGHT 20
 #define MIN_MINES 1
 #define MAX_MINES ((g_width * g_height) / 2)
@@ -461,15 +461,19 @@ void runGame()
         switch(c)
         {
             case KEY_UP:
+            case 'k':
                 if(g_sely > 0) g_sely--;
                 break;
             case KEY_DOWN:
+            case 'j':
                 if(g_sely < g_height - 1) g_sely++;
                 break;
             case KEY_LEFT:
+            case 'h':
                 if(g_selx > 0) g_selx--;
                 break;
             case KEY_RIGHT:
+            case 'l':
                 if(g_selx < g_width - 1) g_selx++;
                 break;
             case 'f':
