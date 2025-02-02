@@ -1,0 +1,108 @@
+.Dd 2025-02-01
+.Dt MINESWEEPER 6
+.Os
+.Sh NAME
+.Nm minesweeper
+.Nd minesweeper game
+.Sh SYNOPSIS
+.Nm
+.Op Ar difficulty
+.Op Ar options
+.Sh DESCRIPTION
+The objective of
+.Nm
+is to identify the location of all the mines on the board by revealing
+every safe location. The number in a location indicates how many
+mines are touching that location. For example, a location with a 
+.Ar 2
+will have 2 mines in its immediate vicinity.
+.Pp
+An example of a board midway through the game and afterward are given
+below. From this, we can see how the numbers refer to the surrounding 
+mines:
+.Bd -literal -offset indent
+    1 # # # # # #  |     1 2 * 1
+  1 2 # # # # # #  |   1 2 * 3 2 1
+  1 # # # # # # #  |   1 * 2 2 * 1
+  1 1 1 1 2 # # #  |   1 1 1 1 2 3 2 1
+          1 # # #  |           1 * * 2
+        1 2 # # #  |         1 2 3 3 *
+        1 # # # #  |         1 * 1 1 1
+1 1 2 1 2 # # # #  | 1 1 2 1 2 1 1 
+# # # # # # # # #  | 1 * 2 * 1
+.Ed
+.Pp
+The game is won if all locations not containing mines are revealed.
+It is lost if a mine is revealed.
+.Ss Controls
+The 
+.Ar >
+on the board represents your position, which can be controlled using the
+arrow keys or by using "h", "j", "k", and "l".
+.Pp
+Other commands are:
+.Bl -tag -width 8n -compact
+.It (space)
+Reveal current cell
+.It (enter)
+Reveal current cell
+.It f
+Freeze current cell
+.It a
+Autoreveal
+.It q
+Exit the game
+.El
+.Pp
+.Sh OPTIONS
+.Ss Difficulty
+There are three "default" levels of difficulty, which can be specified
+using the
+.Fl -easy ,
+.Fl -medium ,
+and
+.Fl -hard
+options:
+.Bl -tag -width "--medium" -compact
+.It Fl -easy
+10 mines, 9x9 grid
+.It Fl -medium
+40 mines, 16x16 grid
+.It Fl -hard
+99 mines, 16x16 grid
+.El
+.Pp
+Other grid sizes and mine numbers are possible by using the 
+.Fl w ,
+.Fl h ,
+and
+.Fl m
+options. If one of these options is not provided, a default value is
+used (width = 9, height = 9, mines = 10).
+.Pp
+It is currently impossible to have a grid larger than the size of your
+terminal.
+.Ss Other options
+.Bl -tag -width -indent
+.It Fl -ask
+Ask which difficulty is desired before beginning game, (e.g. for
+launcher shortcuts where it may be desirable to not hard-code the
+difficulty)
+.It Fl -color
+Enable color output. (This is currently the default.)
+.It Fl -nocolor
+Disable color output.
+.El
+.Sh BUGS
+.Bl -bullet
+.It
+If a square containing a mine is clicked on the first turn, this results
+in an automatic loss. This behavior is inconsistant with how Windows
+Minesweeper handles such cases
+.It
+Color output assumes a dark-mode terminal. If a light-themed terminal
+is used, it still uses dark backgrounds.
+.El
+.Pp
+Report bugs on GitHub:
+.Pa https://github.com/EthanNord/cli-minesweeper
