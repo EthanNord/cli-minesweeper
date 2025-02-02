@@ -49,6 +49,8 @@ int g_flagged = 0;
 int g_width = 9;
 int g_height = 9;
 
+int g_wants_color = 1;
+
 /* functions */
 void show(int);
 void flag(int);
@@ -64,7 +66,9 @@ void cleanup();
 /* print to console depending on color or not */
 void print_nocolor(short color, char c)
 {
+    if(color == '!' || color == EXPLOSION_COLOR) attron(A_STANDOUT);
     printw("%c", c);
+    if(color == '!' || color == EXPLOSION_COLOR) attroff(A_STANDOUT);
 }
 void print_color(short color, char c)
 {
@@ -77,9 +81,10 @@ void (*cprint)(short, char) = print_color;
 
 void setup_color()
 {
-    if(has_colors() == FALSE) {
+    if(has_colors() == FALSE || !g_wants_color) {
         cprint = print_nocolor;
     } else {
+        start_color();
         /* initialize color pairs */
         short fg = COLOR_WHITE, bg = COLOR_BLACK;
         init_pair(' ', fg, bg);
@@ -125,6 +130,8 @@ int main(int argc, char** argv)
         {"hard", no_argument, &g_mode, MODE_HARD},
         {"advanced", no_argument, &g_mode, MODE_HARD},
         {"expert", no_argument, &g_mode, MODE_HARD},
+        {"color", no_argument, &g_wants_color, 1},
+        {"nocolor", no_argument, &g_wants_color, 0},
         {"help", no_argument, 0, '?'},
         {"width", required_argument, 0, 'w'},
         {"height", required_argument, 0, 'h'},
@@ -171,8 +178,7 @@ int main(int argc, char** argv)
     initscr();
     keypad(stdscr, TRUE);
     noecho();
-    start_color();
-    
+
     /* do color alchemy so that it works */
     setup_color();
 
