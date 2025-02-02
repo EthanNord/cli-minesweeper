@@ -109,6 +109,7 @@ Difficulty levels:\n\
     --medium (--intermediate)    40       16x16\n\
     --hard   (--advanced)        99       16x30\n\
 You can also specify your own dimensions with the -w, -h, or -m options.\n");
+    exit(0);
 }
 
 int main(int argc, char** argv)
