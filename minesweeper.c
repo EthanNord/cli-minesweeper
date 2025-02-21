@@ -18,6 +18,9 @@
 
 #define EXPLOSION_COLOR 4
 
+#define min(x, y) ((x) < (y) ? (x) : (y))
+#define max(x, y) ((x) > (y) ? (x) : (y))
+
 /* globals */
 typedef enum _gamemode_t {
     MODE_UNKNOWN = 0,
@@ -40,6 +43,7 @@ char* g_state;
 size_t g_gridsize;
 int g_selx;
 int g_sely;
+int g_count; /* (vim-style) */
 
 time_t g_starttime;
 
@@ -305,6 +309,7 @@ void initGame()
     }
     
     g_starttime = 0;
+    g_count = 0;
 }
 
 int getrand(int max)
@@ -352,6 +357,10 @@ void print_grid()
         printw("\n");
     }
     printw("Mines remaining: %2d\n", g_minecount - g_flagged);
+    if(g_count) 
+        printw("%-5d", g_count);
+    else
+        printw("     ");
     printw("                                           \n");
 }
 
@@ -460,28 +469,82 @@ void runGame()
         if(g_starttime == 0) time(&g_starttime);
         switch(c)
         {
+            case 'G':
+                if(g_count == 0) {
+                    g_sely = g_height - 1;
+                } else {
+                    g_sely = min(g_count, g_height - 1);
+                    g_count = 0;
+                }
+                break;
+            case '$':
+                g_count = 0;
+                g_selx = g_width - 1;
+                break;
+            case 'g':
+                g_count = 0;
+                g_sely = 0;
+                break;
+            case '0':
+                if(g_count)
+                    g_count *= 10;
+                else
+                    g_selx = 0;
+                break;
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                if(g_count == 0)
+                    g_count = c - '0';
+                else
+                    g_count = g_count * 10 + c - '0';
+                break;
             case KEY_UP:
             case 'k':
                 if(g_sely > 0) g_sely--;
+                if(g_count > 0) {
+                    while(--g_count)
+                        if(g_sely > 0) g_sely--;
+                }
                 break;
             case KEY_DOWN:
             case 'j':
                 if(g_sely < g_height - 1) g_sely++;
+                if(g_count > 0) {
+                    while(--g_count)
+                        if(g_sely < g_height - 1) g_sely++;
+                }
                 break;
             case KEY_LEFT:
             case 'h':
                 if(g_selx > 0) g_selx--;
+                if(g_count > 0) {
+                    while(--g_count)
+                        if(g_selx > 0) g_selx--;
+                }
                 break;
             case KEY_RIGHT:
             case 'l':
                 if(g_selx < g_width - 1) g_selx++;
+                if(g_count > 0) {
+                    while(--g_count)
+                        if(g_selx < g_width - 1) g_selx++;
+                }
                 break;
             case 'f':
+                g_count = 0;
                 flag(SEL2IDX);
                 break;
             case 'c':
             case KEY_ENTER:
             case ' ':
+                g_count = 0;
                 show(SEL2IDX);
                 break;
             default: break;
